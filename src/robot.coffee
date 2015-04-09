@@ -14,11 +14,24 @@ module.exports = class Robot
     @actions = { }
     @commands = { }
 
+    @store = { }
+
   run: () =>
     @webapi.getMeta().then (meta) =>
-      @meta = meta
+      @initializeUsers(meta)
+
       @socket = new Socket(meta.url)
       @initializeSocket()
+
+  initializeUsers: (meta) =>
+    @store.users = { }
+    @addUser(user) for user in meta.users
+
+  addUser: (user) =>
+    @store.users[user.name] = user
+
+  getUser: (name) =>
+    return @store.users[name]
 
   stop: () =>
     @socket.close()
