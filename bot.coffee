@@ -15,10 +15,7 @@ bot.command ["ping"] , (args, data) ->
   bot.sendTo data.channel, { text: "pong" }
 
 bot.command ["shutdown"], (args, data) ->
-  bot.sendTo data.channel, { text: "Fuck you, right?" }
-
-bot.command ["$"], (args, data) ->
-  bot.sendTo data.channel, { text: "Fuck you all, I am out!" }
+  bot.sendTo data.channel, { text: "Bye bye" }
   bot.stop()
 
 bot.run()
