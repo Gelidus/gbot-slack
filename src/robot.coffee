@@ -38,9 +38,13 @@ module.exports = class Robot
   initializeChannels: (meta) =>
     @store.channels = { }
     @addChannel(channel) for channel in meta.channels
+    @addChannel(channel) for channel in meta.ims
 
   addChannel: (channel) =>
-    @store.channels[channel.name] = new Channel(channel)
+    @store.channels[channel.id] = new Channel(channel)
+
+  getChannel: (channelname) =>
+    return @store.channels[channelname]
 
   getUser: (name) =>
     return @store.users[name]
@@ -94,14 +98,16 @@ module.exports = class Robot
 
     @commands[name].register(list, action)
 
-  send: (data) =>
-    data.token = data.token || @options.token
+  send: (object, data) =>
+    if object instanceof Channel
+      data.channel = data.channel || object.meta.id
+    else if object instanceof User
+      console.dir "not supported"
+    else
+      throw new Error("Cannot send data to unknown object")
 
-    @socket.send(JSON.stringify(data))
 
-  sendTo: (channel, data) =>
     data.type = "message"
     data.token = data.token || @options.token
-    data.channel = data.channel || channel
 
     @socket.send(JSON.stringify(data))
