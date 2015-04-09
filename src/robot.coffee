@@ -70,7 +70,7 @@ module.exports = class Robot
       @onMessage(data)
 
   onMessage:(data) =>
-    if data.text.length > @options.prefix.length and data.text.substr(0, @options.prefix.length) is @options.prefix
+    if data.text? and data.text.length > @options.prefix.length and data.text.substr(0, @options.prefix.length) is @options.prefix
       trueData = data.text.substr(@options.prefix.length)
       args = trueData.split(" ")
 
@@ -97,6 +97,8 @@ module.exports = class Robot
       }
 
     @commands[name].register(list, action)
+
+  plugin: (cls) ->
 
   send: (object, data) =>
     if object instanceof Channel
