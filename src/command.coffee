@@ -23,7 +23,7 @@ module.exports = class Command
     @subcommands[name].register(list, action)
 
   invoke: (args, data) =>
-    if args.length is 0 or not @subcommands[args[0]]?
+    if args.length is 0 or not @subcommands[args[0]]? and @action?
       return @action(args, data)
 
     if args.length > 0 and @subcommands[args[0]]?
