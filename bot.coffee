@@ -6,13 +6,19 @@ bot.when "hello", (data) -> # type of hello message
   console.log "Authenticated with server"
 
 bot.command ["kto", "je", "pan"], (args, data) ->
-  bot.sendTo data.channel, { text: "Ty si pan!" }
+  channel = bot.getChannel(data.channel)
+
+  bot.send channel, { text: "Ty si pan!" }
 
 bot.command ["ping"] , (args, data) ->
-  bot.sendTo data.channel, { text: "pong" }
+  channel = bot.getChannel(data.channel)
+
+  bot.send channel, { text: "pong" }
 
 bot.command ["shutdown"], (args, data) ->
-  bot.sendTo data.channel, { text: "Bye bye" }
+  channel = bot.getChannel(data.channel)
+
+  bot.send channel, { text: "Bye bye" }
   bot.stop()
 
 bot.run()
