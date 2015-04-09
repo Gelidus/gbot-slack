@@ -103,9 +103,9 @@ module.exports = class Robot
     @plugins[cls.name] = new cls()
 
   use: (pluginName) =>
-    throw new Error("Plugin now found [#{pluginName}]") if not @plugins[cls.name]
+    throw new Error("Plugin now found [#{pluginName}]") if not @plugins[pluginName]
 
-    return @plugins[cls.name]
+    return @plugins[pluginName]
 
   send: (object, data) =>
     if object instanceof Channel
