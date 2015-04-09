@@ -1,12 +1,14 @@
 Robot = require("./src/robot")
 
 bot = new Robot(require("./config"))
+
+bot.plugin(require("./plugins/fetch"))
 bot.plugin(require("./plugins/pomodoro"))
 
 http = require("http")
 
 bot.when "hello", (data) -> # type of hello message
-  console.log "Authenticated with server"
+  console.log "Running."
 
 bot.command ["kto", "je", "pan"], (args, data) ->
   channel = bot.getChannel(data.channel)
@@ -32,15 +34,16 @@ bot.command ["weather"], (args, data) ->
   return if args.length < 1
   channel = bot.getChannel(data.channel)
 
-  req = http.get "http://api.openweathermap.org/data/2.5/weather?q=#{args[0]}", (res) ->
-    res.on "data", (buffer) ->
-      weather = JSON.parse(buffer)
-      if weather.cod is "404"
-        bot.send channel, { text: "Can't find information about given city!" }
-      else
-        bot.send channel, { text: "Weather in #{args[0]}: #{weather.weather[0].description}, temp: #{Math.round(weather.main.temp/33.8*100)/100}C , wind: #{weather.wind.speed}" }
-
-  req.end()
+  bot.use("Fetch").get({
+    url: "http://api.openweathermap.org/data/2.5/weather"
+    body: {
+      q: args[0]
+    }
+  }).then (weather) ->
+    if weather.cod is "404"
+      bot.send channel, { text: "Can't find information about given city!" }
+    else
+      bot.send channel, { text: "Weather in #{args[0]}: #{weather.weather[0].description}, temp: #{Math.round(weather.main.temp/33.8*100)/100}C , wind: #{weather.wind.speed}" }
 
 bot.command ["pomodoro"], (args, data) ->
   return if args.length < 2
