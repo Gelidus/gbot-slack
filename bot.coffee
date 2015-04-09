@@ -1,9 +1,6 @@
 Robot = require("./src/robot")
 
-bot = new Robot {
-  token: "xoxb-4375379199-ff0rNwJvo0xcOrD4DfYp8i8D"
-  prefix: "$"
-}
+bot = new Robot(require("./config"))
 
 bot.when "hello", (data) -> # type of hello message
   console.log "Authenticated with server"

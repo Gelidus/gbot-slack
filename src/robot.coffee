@@ -1,8 +1,12 @@
 Promise = require("promise")
 WebAPI = require("./slackapi")
 Socket = require("ws")
+
 Action = require("./action")
 Command = require("./command")
+
+User = require("./user")
+Channel = require("./channel")
 
 module.exports = class Robot
 
@@ -19,6 +23,7 @@ module.exports = class Robot
   run: () =>
     @webapi.getMeta().then (meta) =>
       @initializeUsers(meta)
+      @initializeChannels(meta)
 
       @socket = new Socket(meta.url)
       @initializeSocket()
@@ -28,7 +33,14 @@ module.exports = class Robot
     @addUser(user) for user in meta.users
 
   addUser: (user) =>
-    @store.users[user.name] = user
+    @store.users[user.name] = new User(user)
+
+  initializeChannels: (meta) =>
+    @store.channels = { }
+    @addChannel(channel) for channel in meta.channels
+
+  addChannel: (channel) =>
+    @store.channels[channel.name] = new Channel(channel)
 
   getUser: (name) =>
     return @store.users[name]
