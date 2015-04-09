@@ -14,26 +14,33 @@ module.exports = class Fetch
       return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
     .join('&')
 
-  get: (opts = { }) ->
+  convertBuffer: (buffer, to) ->
+    if to is "json"
+      return JSON.parse(buffer)
+    else
+      return buffer
+
+  get: (opts = { }) =>
     opts.type = opts.type || "json"
     opts.body = opts.body || { }
     throw new Error("Field not specified: url") if not opts.url?
 
     return new Promise (fulfill) =>
-      req = Http.get "#{opts.url}?#{@encodeToParams(opts.body)}", (res) ->
-        res.on "data", (buffer) ->
-          if opts.type is "json"
-            data = JSON.parse(buffer)
-          else
-            data = buffer
+      Http.get "#{opts.url}?#{@encodeToParams(opts.body)}", (res) =>
+        res.on "data", (buffer) =>
+          fulfill(@convertBuffer(buffer, opts.type))
+      .end(null)
 
-          fulfill(data)
-      req.end(null)
-
-  gets: (opts = { }) ->
+  gets: (opts = { }) =>
     opts.type = opts.type || "json"
     opts.body = opts.body || { }
     throw new Error("Field not specified: url") if not opts.url?
+
+    return new Promise (fulfill) =>
+      Https.get "#{opts.url}?#{@encodeToParams(opts.body)}", (res) =>
+        res.on "data", (buffer) =>
+          fulfill(@convertBuffer(buffer, opts.type))
+      .end(null)
 
   post: () ->
 
