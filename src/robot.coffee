@@ -17,6 +17,7 @@ module.exports = class Robot
     @socket = null
     @actions = { }
     @commands = { }
+    @plugins = { }
 
     @store = { }
 
@@ -98,7 +99,13 @@ module.exports = class Robot
 
     @commands[name].register(list, action)
 
-  plugin: (cls) ->
+  plugin: (cls) =>
+    @plugins[cls.name] = new cls()
+
+  use: (pluginName) =>
+    throw new Error("Plugin now found [#{pluginName}]") if not @plugins[cls.name]
+
+    return @plugins[cls.name]
 
   send: (object, data) =>
     if object instanceof Channel
