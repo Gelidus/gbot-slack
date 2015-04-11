@@ -73,7 +73,7 @@ module.exports = class Robot
   onMessage:(data) =>
     if data.text? and data.text.length > @options.prefix.length and data.text.substr(0, @options.prefix.length) is @options.prefix
       trueData = data.text.substr(@options.prefix.length)
-      args = trueData.split(" ")
+      args = trueData.match(/\w+|"(?:\\"|[^"])+"/g)
 
       return if args.length < 1 or not @commands[args[0]]?
       @commands[args.shift()].invoke(args, data)
