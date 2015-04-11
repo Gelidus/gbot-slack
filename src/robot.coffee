@@ -75,6 +75,12 @@ module.exports = class Robot
       trueData = data.text.substr(@options.prefix.length)
       args = trueData.match(/\w+|"(?:\\"|[^"])+"/g)
 
+      for i in [0...args.length] # normalization
+        continue if not args[i][0] is "\"" or not args[i][args.length-1] is "\""
+        args[i] = args[i].replace(/^"|"$/g, "")
+
+      console.dir args
+
       return if args.length < 1 or not @commands[args[0]]?
       @commands[args.shift()].invoke(args, data)
 
