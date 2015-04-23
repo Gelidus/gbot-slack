@@ -44,7 +44,7 @@ bot.command ["weather"], (args, data) ->
     if weather.cod is "404"
       bot.send channel, { text: "Can't find information about given city!" }
     else
-      bot.send channel, { text: "Weather in #{args[0]}: #{weather.weather[0].description}, temp: #{Math.round(weather.main.temp/33.8*100)/100}C , wind: #{weather.wind.speed}" }
+      bot.send channel, { text: "Weather in #{args[0]}: #{weather.weather[0].description}, temp: #{Math.round((weather.main.temp - 272.15)*100)/100}C , wind: #{weather.wind.speed}" }
 
 bot.command ["pomodoro"], (args, data) ->
   return if args.length < 2
@@ -78,6 +78,13 @@ bot.command ["shutdown"], (args, data) ->
   channel = bot.getChannel(data.channel)
 
   bot.send channel, { text: "Bye bye" }
-  bot.stop()
+  bot.sleep()
 
+bot.command ["wakeup"], (args, data) ->
+  channel = bot.getChannel(data.channel)
+
+  bot.send channel, { text: "Hello again" }
+  bot.wakeup()
+
+bot.persistCommand("wakeup")
 bot.run()
