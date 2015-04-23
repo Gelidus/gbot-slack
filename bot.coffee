@@ -4,6 +4,7 @@ bot = new Robot(require("./config"))
 
 bot.plugin(require("./plugins/fetch"))
 bot.plugin(require("./plugins/pomodoro"))
+bot.plugin(require("./plugins/ciphers"))
 
 http = require("http")
 
@@ -53,6 +54,20 @@ bot.command ["pomodoro"], (args, data) ->
     bot.send channel, { text: "Pomodoro time! [#{name}]" }
 
   bot.send channel, { text: "Pomodoro [#{args[0]}] registered" }
+
+bot.command ["cipher", "encrypt"], (args, data) ->
+  return if args.length < 2
+  channel = bot.getChannel(data.channel)
+
+  bot.use("Ciphers").encrypt args[0], args[1], (cipher) ->
+    bot.send(channel, { text: "Encrypted message [#{cipher}]"})
+
+bot.command ["cipher", "decrypt"], (args, data) ->
+  return if args.length < 2
+  channel = bot.getChannel(data.channel)
+
+  bot.use("Ciphers").decrypt args[0], args[1], (text) ->
+    bot.send(channel, { text: "Decrypted message [#{text}]" })
 
 bot.command ["help"], (args, data) ->
   channel = bot.getChannel(data.channel)
