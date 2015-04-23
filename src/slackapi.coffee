@@ -8,7 +8,10 @@ module.exports = class API
 
   getMeta: () =>
     return new Promise (fulfill) =>
+      chunk = ""
       Https.get "https://slack.com/api/rtm.start?token=#{@options.token}", (res) ->
         res.on "data", (data) ->
-          fulfill(JSON.parse(data))
+          chunk += data
+        res.on "end", () ->
+          fulfill(JSON.parse(chunk))
       .end(null)
