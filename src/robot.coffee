@@ -17,9 +17,12 @@ module.exports = class Robot
     @socket = null
     @actions = { }
     @commands = { }
+    @persistentCommands = []
     @plugins = { }
 
     @store = { }
+
+    @sleeping = false
 
   run: () =>
     @webapi.getMeta().then (meta) =>
@@ -53,6 +56,12 @@ module.exports = class Robot
   stop: () =>
     @socket.close()
 
+  sleep: () =>
+    @sleeping = true
+
+  wakeup: () =>
+    @sleeping = false
+
   initializeSocket: () =>
     return if not @socket?
 
@@ -79,7 +88,7 @@ module.exports = class Robot
         continue if not args[i][0] is "\"" or not args[i][args.length-1] is "\""
         args[i] = args[i].replace(/^"|"$/g, "")
 
-      console.dir args
+      return if @sleeping and args[0] not in @persistentCommands
 
       return if args.length < 1 or not @commands[args[0]]?
       @commands[args.shift()].invoke(args, data)
@@ -104,6 +113,9 @@ module.exports = class Robot
       }
 
     @commands[name].register(list, action)
+
+  persistCommand: (command) =>
+    @persistentCommands.push(command)
 
   plugin: (cls) =>
     @plugins[cls.name] = new cls()
