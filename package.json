@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "include-all": "^0.1.6",
     "promise": "^7.0.0",
     "ws": "^0.7.1"
   },
