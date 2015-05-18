@@ -5,6 +5,7 @@ bot = new Robot(require("./config"))
 bot.plugin(require("./plugins/fetch"))
 bot.plugin(require("./plugins/pomodoro"))
 bot.plugin(require("./plugins/ciphers"))
+bot.plugin(require("./plugins/simpledb"))
 
 http = require("http")
 
@@ -68,6 +69,20 @@ bot.command ["cipher", "decrypt"], (args, data) ->
 
   bot.use("Ciphers").decrypt args[0], args[1], (text) ->
     bot.send(channel, { text: "Decrypted message [#{text}]" })
+
+bot.command ["db"], (args, data) ->
+  return if args.length < 1
+  channel = bot.getChannel(data.channel)
+
+  bot.use("Simpledb").execute data.text.slice(data.text.indexOf(" ") + 1), (err, rows) ->
+    if err?
+      bot.send(channel, {text: "Error happened: #{err.toString()}"})
+    else
+      console.dir rows
+      if rows?
+        bot.send(channel, {text: JSON.stringify(rows, null, 4)})
+      else
+        bot.send(channel, {text: "Query done!"})
 
 bot.command ["help"], (args, data) ->
   channel = bot.getChannel(data.channel)
