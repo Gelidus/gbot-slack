@@ -77,12 +77,8 @@ bot.command ["db"], (args, data) ->
   bot.use("Simpledb").execute data.text.slice(data.text.indexOf(" ") + 1), (err, rows) ->
     if err?
       bot.send(channel, {text: "Error happened: #{err.toString()}"})
-    else
-      console.dir rows
-      if rows?
-        bot.send(channel, {text: JSON.stringify(rows, null, 4)})
-      else
-        bot.send(channel, {text: "Query done!"})
+    else if rows?
+      bot.send(channel, {text: JSON.stringify(rows, null, 4)})
 
 bot.command ["help"], (args, data) ->
   channel = bot.getChannel(data.channel)
