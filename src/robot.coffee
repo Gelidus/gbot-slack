@@ -2,6 +2,8 @@ Promise = require("promise")
 WebAPI = require("./slackapi")
 Socket = require("ws")
 
+Include = require("include-all")
+
 Action = require("./action")
 Command = require("./command")
 
@@ -23,6 +25,14 @@ module.exports = class Robot
     @store = { }
 
     @sleeping = false
+
+    plugins = Include({
+      dirname : __dirname + "/../plugins"
+      filter  : /(.*)\..*/
+    })
+
+    for name, plugin of plugins
+      @plugin(plugin)
 
   run: () =>
     @webapi.getMeta().then (meta) =>

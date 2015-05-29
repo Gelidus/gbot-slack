@@ -2,11 +2,6 @@ Robot = require("./src/robot")
 
 bot = new Robot(require("./config"))
 
-bot.plugin(require("./plugins/fetch"))
-bot.plugin(require("./plugins/pomodoro"))
-bot.plugin(require("./plugins/ciphers"))
-bot.plugin(require("./plugins/simpledb"))
-
 http = require("http")
 
 bot.when "hello", (data) -> # type of hello message
