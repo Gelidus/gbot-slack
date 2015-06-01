@@ -75,6 +75,14 @@ bot.command ["db"], (args, data) ->
     else if rows?
       bot.send(channel, {text: JSON.stringify(rows, null, 4)})
 
+bot.command ["rand"], (args, data) ->
+  return if args.length < 2
+  channel = bot.getChannel(data.channel)
+
+  rand = Math.floor((Math.random() * args[1]) + args[0])
+
+  bot.send(channel, {text: "#{rand}"})
+
 bot.command ["help"], (args, data) ->
   channel = bot.getChannel(data.channel)
 
